@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:info_saldo_apps/data/local/database.dart';
+import 'package:info_saldo_apps/app/data/local/database.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -13,8 +14,14 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   bool isExpense = true;
-  final AppDb database = AppDb();
+  final database = Get.find<AppDb>();
   final TextEditingController categoryNameController = TextEditingController();
+
+  @override
+  void dispose() {
+    categoryNameController.dispose();
+    super.dispose();
+  }
 
   Future<void> insert(String name, int type) async {
     final now = DateTime.now();
@@ -43,7 +50,8 @@ class _CategoryPageState extends State<CategoryPage> {
 
     showDialog(
       context: context,
-      builder: (_) {
+      builder: (context) {
+        // Gunakan context dari builder
         return AlertDialog(
           title: Text(
             isExpense ? 'Add Income' : 'Add Outcome',
@@ -58,7 +66,7 @@ class _CategoryPageState extends State<CategoryPage> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Get.back(),
               child: const Text('Cancel'),
             ),
             ElevatedButton(
@@ -66,15 +74,27 @@ class _CategoryPageState extends State<CategoryPage> {
                 final name = categoryNameController.text.trim();
                 if (name.isEmpty) return;
 
-                if (category == null) {
-                  await insert(name, isExpense ? 2 : 1);
-                } else {
-                  await update(category.id, name);
-                }
+                // 1. Jalankan proses database dengan try-catch
+                try {
+                  if (category == null) {
+                    await insert(name, isExpense ? 2 : 1);
+                  } else {
+                    await update(category.id, name);
+                  }
 
-                categoryNameController.clear();
-                Navigator.pop(context);
-                setState(() {});
+                  // 2. CEK MOUNTED: Sangat penting sebelum Navigator.pop
+                  if (!mounted) return;
+
+                  categoryNameController.clear();
+
+                  // Gunakan Get.back() agar lebih konsisten dengan GetX
+                  Get.back();
+
+                  // Refresh UI
+                  setState(() {});
+                } catch (e) {
+                  print("Error database: $e");
+                }
               },
               child: const Text('Save'),
             ),

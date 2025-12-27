@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 // These imports are used to open the database
 import 'package:drift/native.dart';
-import 'package:info_saldo_apps/data/models/transaction_with_category.dart';
+import 'package:info_saldo_apps/app/data/models/transaction_with_category.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'package:info_saldo_apps/data/local/tables/category.dart';
-import 'package:info_saldo_apps/data/local/tables/transaction.dart';
+import 'package:info_saldo_apps/app/data/local/tables/category.dart';
+import 'package:info_saldo_apps/app/data/local/tables/transaction.dart';
 
 part 'database.g.dart';
 

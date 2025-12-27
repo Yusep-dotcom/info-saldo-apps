@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:info_saldo_apps/routes/app_pages.dart';
+import 'package:info_saldo_apps/app/routes/app_pages.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -14,6 +14,7 @@ class AuthController extends GetxController {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: password);
       Get.snackbar("Berhasil", "Login sukses");
+      Get.offAllNamed(Routes.HOME);
     } on FirebaseAuthException catch (e) {
       print("ERROR CODE: ${e.code}");
       print("ERROR MESSAGE: ${e.message}");
@@ -53,6 +54,7 @@ class AuthController extends GetxController {
       await auth.signOut();
 
       Get.snackbar('Logout', 'Anda berhasil logout');
+      Get.offAllNamed(Routes.LOGIN);
     } catch (e) {
       Get.snackbar('ERROR', 'Gagal logout: $e');
     }

@@ -1,9 +1,9 @@
 import 'package:calendar_appbar/calendar_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:info_saldo_apps/modules/category/category_page.dart';
-import 'package:info_saldo_apps/modules/transaction/view/transaction_page.dart';
-import 'package:info_saldo_apps/modules/home/home_page.dart';
+import 'package:info_saldo_apps/app/modules/category/category_page.dart';
+import 'package:info_saldo_apps/app/modules/transaction/view/transaction_page.dart';
+import 'package:info_saldo_apps/app/modules/home/home_page.dart';
 import 'package:intl/intl.dart';
 
 class MainPage extends StatefulWidget {

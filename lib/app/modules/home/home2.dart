@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:info_saldo_apps/modules/auth/auth_controller.dart';
+import 'package:info_saldo_apps/app/modules/auth/auth_controller.dart';
 
 class Home2 extends StatelessWidget {
   final authC = Get.find<AuthController>();

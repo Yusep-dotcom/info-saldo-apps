@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:info_saldo_apps/data/local/database.dart';
-import 'package:info_saldo_apps/data/models/transaction_with_category.dart';
-import 'package:info_saldo_apps/modules/auth/auth_controller.dart';
+import 'package:info_saldo_apps/app/data/local/database.dart';
+import 'package:info_saldo_apps/app/data/models/transaction_with_category.dart';
+import 'package:info_saldo_apps/app/modules/auth/auth_controller.dart';
 import 'package:intl/intl.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -18,7 +18,7 @@ class TransactionPage extends StatefulWidget {
 class _TransactionPageState extends State<TransactionPage> {
   @override
   bool isIncome = true;
-  AppDb database = AppDb();
+  final database = Get.find<AppDb>();
   List<String> list = ['Makan', 'Jajan', 'Transportasi'];
   TextEditingController kategoriController = TextEditingController();
   TextEditingController dateControler = TextEditingController();
