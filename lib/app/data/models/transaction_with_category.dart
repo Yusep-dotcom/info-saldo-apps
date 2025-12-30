@@ -6,3 +6,11 @@ class TransactionWithCategory {
 
   TransactionWithCategory({required this.transaction, required this.category});
 }
+
+class RekapRow {
+  final String category;
+  final int amount;
+
+  RekapRow({required this.category, required this.amount});
+}
+

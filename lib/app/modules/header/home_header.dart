@@ -17,7 +17,7 @@ class HomeHeader extends StatelessWidget {
           Container(
             height: 230,
             decoration: const BoxDecoration(
-              color: Colors.deepPurple,
+              color: Color(0xFF5656B4),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(25),
                 bottomRight: Radius.circular(25),

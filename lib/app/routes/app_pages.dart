@@ -32,7 +32,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.REKAP,
-      page: () => const RekapView(),
+      page: () => RekapView(),
       binding: RekapBinding(),
     ),
   ];

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:info_saldo_apps/app/modules/category/view/category_page.dart';
 import 'package:info_saldo_apps/app/modules/home/home_page.dart';
+import 'package:info_saldo_apps/app/modules/rekap/views/rekap_view.dart';
 import 'package:info_saldo_apps/app/modules/transaction/view/transaction_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -19,8 +20,9 @@ class _MainPageState extends State<MainPage> {
   // Pastikan urutannya sama dengan urutan BottomNavigationBarItem
   final List<Widget> widgetOptions = [
     HomePage(),
-    const TransactionPage(), // Sekarang jadi tab tengah
+    TransactionPage(), // Sekarang jadi tab tengah
     const CategoryPage(),
+    RekapView(),
   ];
 
   @override
@@ -51,6 +53,7 @@ class _MainPageState extends State<MainPage> {
             label: 'Transaction',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Category'),
+          BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: 'Rekap'),
         ],
       ),
     );

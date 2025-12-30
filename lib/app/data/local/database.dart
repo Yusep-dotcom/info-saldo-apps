@@ -160,6 +160,27 @@ class AppDb extends _$AppDb {
       return {'income': income, 'expense': expense, 'saldo': income - expense};
     });
   }
+
+  Future<List<RekapRow>> getRekapByMonth(DateTime start, DateTime end) async {
+    final query = customSelect(
+      '''
+    SELECT c.name as category, SUM(t.amount) as amount
+    FROM transactions t
+    JOIN categories c ON c.id = t.category_id
+    WHERE t.transaction_date >= ? AND t.transaction_date < ?
+    GROUP BY c.name
+    ''',
+      variables: [Variable<DateTime>(start), Variable<DateTime>(end)],
+      readsFrom: {transactions, categories},
+    );
+
+    return query.map((row) {
+      return RekapRow(
+        category: row.read<String>('category'),
+        amount: row.read<int>('amount'),
+      );
+    }).get();
+  }
 }
 
 // =========================
