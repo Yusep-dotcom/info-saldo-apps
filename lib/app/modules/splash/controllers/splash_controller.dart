@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'dart:developer';
 
 import 'package:info_saldo_apps/app/modules/auth/auth_wrapper.dart'; // Untuk log di console
 

@@ -18,10 +18,12 @@ class CategoryPage extends StatelessWidget {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: Obx(() => Text(
-            controller.isExpense.value ? 'Add Income' : 'Add Outcome',
-            style: GoogleFonts.montserrat(),
-          )),
+          title: Obx(
+            () => Text(
+              controller.isExpense.value ? 'Add Income' : 'Add Outcome',
+              style: GoogleFonts.montserrat(),
+            ),
+          ),
           content: TextField(
             controller: controller.nameController,
             decoration: const InputDecoration(
@@ -56,6 +58,19 @@ class CategoryPage extends StatelessWidget {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 70,
+        backgroundColor: Color(0xFF5656B4),
+        centerTitle: true,
+        title: Text(
+          'Tambah Category',
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -65,19 +80,21 @@ class CategoryPage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Obx(() => FlutterSwitch(
-                    value: controller.isExpense.value,
-                    width: 75,
-                    height: 36,
-                    toggleSize: 28,
-                    borderRadius: 30,
-                    activeColor: const Color(0xFF5656B4),
-                    inactiveColor: Colors.red,
-                    onToggle: (value) {
-                      controller.isExpense.value = value;
-                      controller.fetchCategories();
-                    },
-                  )),
+                  Obx(
+                    () => FlutterSwitch(
+                      value: controller.isExpense.value,
+                      width: 75,
+                      height: 36,
+                      toggleSize: 28,
+                      borderRadius: 30,
+                      activeColor: const Color(0xFF5656B4),
+                      inactiveColor: Colors.red,
+                      onToggle: (value) {
+                        controller.isExpense.value = value;
+                        controller.fetchCategories();
+                      },
+                    ),
+                  ),
                   IconButton(
                     icon: const Icon(Icons.add),
                     onPressed: () => openDialog(null),
@@ -99,7 +116,10 @@ class CategoryPage extends StatelessWidget {
                     final category = controller.categoryList[index];
 
                     return Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       child: ListTile(
                         leading: Icon(
                           controller.isExpense.value

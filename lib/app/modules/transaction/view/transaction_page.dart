@@ -90,7 +90,7 @@ class _TransactionPageState extends State<TransactionPage> {
           );
     }
 
-    Get.back();
+    Get.back(result: DateTime.parse(dateController.text));
   }
 
   @override
@@ -99,9 +99,14 @@ class _TransactionPageState extends State<TransactionPage> {
       appBar: AppBar(
         title: Text(
           'Tambah Transaksi',
-          style: GoogleFonts.montserrat(color: Colors.white),
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         centerTitle: true,
+        toolbarHeight: 70,
         backgroundColor: const Color(0xFF5656B4),
       ),
       body: SingleChildScrollView(

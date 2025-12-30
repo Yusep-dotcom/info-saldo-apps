@@ -1,214 +1,143 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:info_saldo_apps/app/data/local/database.dart';
 import 'package:info_saldo_apps/app/data/models/transaction_with_category.dart';
 import 'package:info_saldo_apps/app/modules/transaction/view/transaction_page.dart';
+import 'package:info_saldo_apps/app/modules/header/home_header.dart';
 
-class HomePage extends StatefulWidget {
-  final DateTime selectedDate;
-  const HomePage({super.key, required this.selectedDate});
+class HomePage extends StatelessWidget {
+  HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   final AppDb database = Get.find<AppDb>();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// ======================
-              /// SUMMARY
-              /// ======================
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 81, 81, 81),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _summaryItem(
-                          icon: Icons.download,
-                          iconColor: Colors.blue,
-                          title: 'Income',
-                          value: 'Rp 0',
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: _summaryItem(
-                          icon: Icons.upload,
-                          iconColor: Colors.red,
-                          title: 'Expense',
-                          value: 'Rp 0',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Transaksi',
-                  style: GoogleFonts.montserrat(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              /// ======================
-              /// LIST TRANSAKSI
-              /// ======================
-              StreamBuilder<List<TransactionWithCategory>>(
-                stream: database.getTransactionByDateRepo(widget.selectedDate),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Text('Data masih kosong'),
-                      ),
-                    );
-                  }
-
-                  final data = snapshot.data!;
-
-                  return ListView.builder(
-                    itemCount: data.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final item = data[index];
-
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 6,
-                        ),
-                        child: Card(
-                          elevation: 4,
-                          child: ListTile(
-                            leading: Icon(
-                              item.category.type == 1
-                                  ? Icons.arrow_upward
-                                  : Icons.arrow_downward,
-                              color: item.category.type == 1
-                                  ? Colors.red
-                                  : Colors.blue,
-                            ),
-                            title: Text(
-                              'Rp ${item.transaction.amount}',
-                              style: GoogleFonts.montserrat(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '${item.category.name} • ${item.transaction.title}',
-                              style: GoogleFonts.montserrat(fontSize: 12),
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                /// DELETE
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () async {
-                                    await database.deleteTransaction(
-                                      item.transaction.id,
-                                    );
-                                  },
-                                ),
-
-                                /// EDIT
-                                IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () {
-                                    Get.to(() => TransactionPage(transactionWithCategory:snapshot.data![index]));
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// ======================
-  /// SUMMARY ITEM
-  /// ======================
-  Widget _summaryItem({
-    required IconData icon,
-    required Color iconColor,
-    required String title,
-    required String value,
-  }) {
-    return Row(
+    return Column(
       children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: iconColor, size: 20),
-        ),
-        const SizedBox(width: 8),
-        Flexible(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: GoogleFonts.montserrat(
-                  color: Colors.white,
-                  fontSize: 12,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: GoogleFonts.montserrat(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                ),
-              ),
-            ],    
+        const HomeHeader(),
+
+        Expanded(
+          child: StreamBuilder<List<TransactionWithCategory>>(
+            stream: database.getAllTransactionsWithCategory(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final transactions = snapshot.data!;
+              if (transactions.isEmpty) {
+                return const Center(child: Text('Belum ada transaksi'));
+              }
+
+              final grouped = _groupByDate(transactions);
+
+              return ListView(
+                padding: const EdgeInsets.all(16),
+                children: grouped.entries.map((entry) {
+                  return _buildDateSection(entry.key, entry.value);
+                }).toList(),
+              );
+            },
           ),
         ),
       ],
+    );
+  }
+
+  // ================= GROUP BY DATE =================
+  Map<DateTime, List<TransactionWithCategory>> _groupByDate(
+    List<TransactionWithCategory> data,
+  ) {
+    final Map<DateTime, List<TransactionWithCategory>> map = {};
+
+    for (final item in data) {
+      final date = DateTime(
+        item.transaction.transaction_date.year,
+        item.transaction.transaction_date.month,
+        item.transaction.transaction_date.day,
+      );
+
+      map.putIfAbsent(date, () => []);
+      map[date]!.add(item);
+    }
+
+    final sortedKeys = map.keys.toList()..sort((a, b) => b.compareTo(a));
+
+    return {for (final k in sortedKeys) k: map[k]!};
+  }
+
+  // ================= UI DATE SECTION =================
+  Widget _buildDateSection(DateTime date, List<TransactionWithCategory> items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          _formatDateLabel(date),
+          style: GoogleFonts.montserrat(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+          ),
+        ),
+        const SizedBox(height: 10),
+
+        ...items.map((item) => _transactionItem(item)),
+
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  String _formatDateLabel(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+
+    if (date == today) return 'Hari Ini';
+    if (date == yesterday) return 'Kemarin';
+
+    return DateFormat('dd MMMM yyyy', 'id').format(date);
+  }
+
+  // ================= TRANSACTION CARD =================
+  Widget _transactionItem(TransactionWithCategory item) {
+    final isExpense = item.category.type == 1;
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 10),
+      child: ListTile(
+        leading: Icon(
+          isExpense ? Icons.arrow_upward : Icons.arrow_downward,
+          color: isExpense ? Colors.red : Colors.blue,
+        ),
+        title: Text(
+          'Rp ${item.transaction.amount}',
+          style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          '${item.category.name} • ${item.transaction.title}',
+          style: GoogleFonts.montserrat(fontSize: 12),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: () {
+                database.deleteTransaction(item.transaction.id);
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                Get.to(() => TransactionPage(transactionWithCategory: item));
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

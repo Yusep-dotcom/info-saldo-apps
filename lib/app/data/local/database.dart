@@ -79,6 +79,87 @@ class AppDb extends _$AppDb {
       }).toList();
     });
   }
+
+  Stream<List<TransactionWithCategory>> getAllTransactionsWithCategoryRepo(
+    DateTime date,
+  ) {
+    final start = DateTime(date.year, date.month, date.day);
+    final end = start.add(Duration(days: 1));
+
+    final query = select(transactions).join([
+      leftOuterJoin(
+        categories,
+        categories.id.equalsExp(transactions.category_id),
+      ),
+    ])..where(transactions.transaction_date.isBetweenValues(start, end));
+
+    return query.watch().map((rows) {
+      return rows.map((row) {
+        return TransactionWithCategory(
+          transaction: row.readTable(transactions),
+          category:
+              row.readTableOrNull(categories) ??
+              Category(
+                id: -1,
+                name: 'Kategori dihapus',
+                type: 0,
+                createdAt: DateTime.now(),
+                updateAt: DateTime.now(),
+              ),
+        );
+      }).toList();
+    });
+  }
+
+  Stream<List<TransactionWithCategory>> getAllTransactionsWithCategory() {
+    final query = select(transactions).join([
+      leftOuterJoin(
+        categories,
+        categories.id.equalsExp(transactions.category_id),
+      ),
+    ])..orderBy([OrderingTerm.desc(transactions.transaction_date)]);
+
+    return query.watch().map((rows) {
+      return rows.map((row) {
+        return TransactionWithCategory(
+          transaction: row.readTable(transactions),
+          category:
+              row.readTableOrNull(categories) ??
+              Category(
+                id: -1,
+                name: 'Kategori dihapus',
+                type: 0,
+                createdAt: DateTime.now(),
+                updateAt: DateTime.now(),
+              ),
+        );
+      }).toList();
+    });
+  }
+
+  Stream<Map<String, int>> watchSummary() {
+    final query = select(transactions).join([
+      innerJoin(categories, categories.id.equalsExp(transactions.category_id)),
+    ]);
+
+    return query.watch().map((rows) {
+      int income = 0;
+      int expense = 0;
+
+      for (final row in rows) {
+        final trx = row.readTable(transactions);
+        final cat = row.readTable(categories);
+
+        if (cat.type == 2) {
+          income += trx.amount;
+        } else if (cat.type == 1) {
+          expense += trx.amount;
+        }
+      }
+
+      return {'income': income, 'expense': expense, 'saldo': income - expense};
+    });
+  }
 }
 
 // =========================

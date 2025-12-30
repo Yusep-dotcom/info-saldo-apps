@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 import '../modules/auth/login/views/login_view.dart';
 import '../modules/auth/signup/bindings/signup_binding.dart';
 import '../modules/auth/signup/views/signup_view.dart';
-import '../modules/home/main_page.dart';
+import '../modules/rekap/bindings/rekap_binding.dart';
+import '../modules/rekap/views/rekap_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 
@@ -18,7 +19,6 @@ class AppPages {
   static const INITIAL = Routes.LOGIN;
 
   static final routes = [
-    GetPage(name: _Paths.HOME, page: () => MainPage()),
     GetPage(name: _Paths.LOGIN, page: () => LoginView()),
     GetPage(
       name: _Paths.SIGNUP,
@@ -29,6 +29,11 @@ class AppPages {
       name: _Paths.SPLASH,
       page: () => const SplashView(),
       binding: SplashBinding(),
+    ),
+    GetPage(
+      name: _Paths.REKAP,
+      page: () => const RekapView(),
+      binding: RekapBinding(),
     ),
   ];
 }
